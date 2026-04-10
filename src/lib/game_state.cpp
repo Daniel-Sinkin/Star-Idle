@@ -1,4 +1,4 @@
-#include "star_idle/game/game_state.hpp"
+#include "game_state.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -10,30 +10,30 @@ namespace star_idle::game
 namespace
 {
 
-constexpr double kPowerPerSolarArray = 3.0;
-constexpr double kPowerStoragePerSolarArray = 15.0;
-constexpr double kBasePowerStorage = 120.0;
-constexpr double kPowerDrawPerMiner = 0.65;
-constexpr double kPowerDrawPerAssembler = 1.10;
-constexpr double kPowerDrawPerLab = 0.90;
-constexpr double kOrePerMiner = 0.90;
-constexpr double kAlloysPerAssembler = 0.35;
-constexpr double kOrePerAlloy = 2.0;
-constexpr double kSciencePerLab = 0.18;
-constexpr double kCreditsPerAlloy = 5.5;
+constexpr f64 kPowerPerSolarArray = 3.0;
+constexpr f64 kPowerStoragePerSolarArray = 15.0;
+constexpr f64 kBasePowerStorage = 120.0;
+constexpr f64 kPowerDrawPerMiner = 0.65;
+constexpr f64 kPowerDrawPerAssembler = 1.10;
+constexpr f64 kPowerDrawPerLab = 0.90;
+constexpr f64 kOrePerMiner = 0.90;
+constexpr f64 kAlloysPerAssembler = 0.35;
+constexpr f64 kOrePerAlloy = 2.0;
+constexpr f64 kSciencePerLab = 0.18;
+constexpr f64 kCreditsPerAlloy = 5.5;
 
-[[nodiscard]] double storage_capacity(const GameState& state)
+[[nodiscard]] f64 storage_capacity(const GameState& state)
 {
     return kBasePowerStorage
            + (static_cast<double>(state.structures.solar_arrays) * kPowerStoragePerSolarArray);
 }
 
-[[nodiscard]] double rounded_cost(double value)
+[[nodiscard]] f64 rounded_cost(f64 value)
 {
     return std::round(value);
 }
 
-[[nodiscard]] double scaled_cost(int owned, double base_cost, double growth)
+[[nodiscard]] f64 scaled_cost(int owned, f64 base_cost, f64 growth)
 {
     return rounded_cost(base_cost * std::pow(growth, static_cast<double>(owned)));
 }
@@ -96,7 +96,7 @@ ProductionSnapshot forecast(const GameState& state)
     return snapshot;
 }
 
-void advance(GameState& state, double delta_seconds)
+void advance(GameState& state, f64 delta_seconds)
 {
     const ProductionSnapshot snapshot = forecast(state);
 

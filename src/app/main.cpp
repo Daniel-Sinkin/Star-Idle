@@ -1,4 +1,4 @@
-#include "star_idle/app/application.hpp"
+#include "application.hpp"
 
 int main()
 {

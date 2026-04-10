@@ -1,4 +1,4 @@
-#include "star_idle/platform/save_system.hpp"
+#include "save_system.hpp"
 
 #include <SDL3/SDL_filesystem.h>
 #include <fstream>

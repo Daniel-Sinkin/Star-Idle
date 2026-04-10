@@ -1,8 +1,9 @@
 #pragma once
 
-#include "star_idle/game/game_state.hpp"
-#include "star_idle/platform/save_system.hpp"
-#include "star_idle/platform/texture_cache.hpp"
+#include "common.hpp"
+#include "game_state.hpp"
+#include "save_system.hpp"
+#include "texture_cache.hpp"
 
 #include <SDL3/SDL.h>
 #include <filesystem>
@@ -26,8 +27,8 @@ class Application
     bool initialize();
     void shutdown();
     void poll_events();
-    void update(double delta_seconds);
-    void render(double delta_seconds);
+    void update(f64 delta_seconds);
+    void render(f64 delta_seconds);
     void render_dockspace();
     void build_default_layout();
     void render_sector_overview_window();
@@ -56,7 +57,7 @@ class Application
 
     std::string last_status_{"Bootstrapped sector command."};
     std::string renderer_name_{"unknown"};
-    double smoothed_frame_ms_{16.0};
+    f64 smoothed_frame_ms_{16.0};
 };
 
 }  // namespace star_idle

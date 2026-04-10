@@ -1,4 +1,4 @@
-#include "star_idle/app/application.hpp"
+#include "application.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -21,9 +21,9 @@ namespace
 constexpr const char* kWindowTitle = "Star Idle";
 constexpr int kWindowWidth = 1600;
 constexpr int kWindowHeight = 900;
-constexpr double kMaxDeltaSeconds = 0.25;
+constexpr f64 kMaxDeltaSeconds = 0.25;
 
-[[nodiscard]] std::string format_amount(double value)
+[[nodiscard]] std::string format_amount(f64 value)
 {
     std::ostringstream stream;
     stream.setf(std::ios::fixed, std::ios::floatfield);
@@ -86,7 +86,7 @@ int Application::run()
         poll_events();
 
         const auto now = std::chrono::steady_clock::now();
-        double delta_seconds = std::chrono::duration<double>(now - last_frame).count();
+        f64 delta_seconds = std::chrono::duration<f64>(now - last_frame).count();
         last_frame = now;
         delta_seconds = std::clamp(delta_seconds, 0.0, kMaxDeltaSeconds);
 
@@ -236,7 +236,7 @@ void Application::poll_events()
     }
 }
 
-void Application::update(double delta_seconds)
+void Application::update(f64 delta_seconds)
 {
     smoothed_frame_ms_ = (smoothed_frame_ms_ * 0.9) + (delta_seconds * 1000.0 * 0.1);
     if (!paused_)
@@ -245,7 +245,7 @@ void Application::update(double delta_seconds)
     }
 }
 
-void Application::render(double delta_seconds)
+void Application::render(f64 delta_seconds)
 {
     (void) delta_seconds;
 

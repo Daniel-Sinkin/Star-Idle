@@ -74,6 +74,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(nlohmann_json)
 
+set(STAR_IDLE_APP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/app)
+set(STAR_IDLE_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/lib)
+
 add_library(star_idle_warnings INTERFACE)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
   target_compile_options(star_idle_warnings INTERFACE
@@ -97,38 +100,62 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
     -Wdouble-promotion
     -Wimplicit-fallthrough
     -Wreturn-type
+    -Winvalid-pch
+  )
+endif()
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  target_compile_options(star_idle_warnings INTERFACE
+    -Wduplicated-branches
+    -Wduplicated-cond
+    -Winit-self
+    -Wlogical-op
+    -Wmissing-declarations
+    -Wredundant-decls
+    -Wuseless-cast
   )
 endif()
 
 add_library(stb_image_lib STATIC
-  src/star_idle/platform/stb_image_impl.cpp
+  ${STAR_IDLE_LIB_DIR}/stb_image_impl.cpp
 )
 target_include_directories(stb_image_lib SYSTEM PRIVATE
   ${stb_SOURCE_DIR}
 )
 
-add_executable(star_idle
-  src/main.cpp
-  src/star_idle/app/application.cpp
-  src/star_idle/game/game_state.cpp
-  src/star_idle/platform/save_system.cpp
-  src/star_idle/platform/texture_cache.cpp
+add_library(star_idle_lib STATIC
+  ${STAR_IDLE_LIB_DIR}/application.cpp
+  ${STAR_IDLE_LIB_DIR}/game_state.cpp
+  ${STAR_IDLE_LIB_DIR}/save_system.cpp
+  ${STAR_IDLE_LIB_DIR}/texture_cache.cpp
 )
-
-target_include_directories(star_idle
+target_include_directories(star_idle_lib
   PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${STAR_IDLE_LIB_DIR}
+  PUBLIC
+    ${STAR_IDLE_LIB_DIR}
   SYSTEM PRIVATE
     ${stb_SOURCE_DIR}
 )
-
-target_link_libraries(star_idle
+target_precompile_headers(star_idle_lib PRIVATE
+  ${STAR_IDLE_LIB_DIR}/pch.hpp
+)
+target_link_libraries(star_idle_lib
+  PUBLIC
+    PkgConfig::SDL3
+    nlohmann_json::nlohmann_json
   PRIVATE
     star_idle_warnings
     stb_image_lib
     imgui_docking
-    PkgConfig::SDL3
-    nlohmann_json::nlohmann_json
+)
+
+add_executable(star_idle
+  ${STAR_IDLE_APP_DIR}/main.cpp
+)
+target_link_libraries(star_idle
+  PRIVATE
+    star_idle_warnings
+    star_idle_lib
 )
 
 add_custom_command(TARGET star_idle POST_BUILD

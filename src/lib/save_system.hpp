@@ -1,6 +1,6 @@
 #pragma once
 
-#include "star_idle/game/game_state.hpp"
+#include "game_state.hpp"
 
 #include <filesystem>
 #include <optional>
